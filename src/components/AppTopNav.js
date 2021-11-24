@@ -9,7 +9,7 @@ const AppTopNav = () => {
                 <li className="nav-item dropdown">
                     <div className="nav-dropdown">
                         <a href="#" id="nav2" className="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i className="fas fa-user"></i> <span>John Doe</span> <i style={{'font-size': '.8em'}} className="fas fa-caret-down"></i>
+                            <i className="fas fa-user"></i> <span>Admin</span> <i style={{'font-size': '.8em'}} className="fas fa-caret-down"></i>
                         </a>
                         <div className="dropdown-menu dropdown-menu-end nav-link-menu">
                             <ul className="nav-list">
