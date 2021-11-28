@@ -12,6 +12,24 @@
     transition: all 0.3s;
     border-right: 1px solid #e6ecf5;
 }
+.public-DraftEditor-content{
+    border: solid 1px #eee;
+    padding: 10px;
+    min-height: 250px;
+}
+.styleButton{
+    border: solid 1px #ccc;
+    margin-right: 2px;
+}
+.btn-link{
+    padding-left: 0;
+    text-align: left;
+}
+.styleButton:hover{
+    background-color:#2196F3;
+    color: #fff;
+    border: solid 1px #2196F3;
+}
 
 #sidebar.active {
     margin-left: -250px;

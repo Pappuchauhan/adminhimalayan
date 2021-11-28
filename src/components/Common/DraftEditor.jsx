@@ -106,10 +106,6 @@ class PageContainer extends React.Component {
           abc
         </button>
 
-        <button id="link_url" onClick={this.onAddLink} className="add-link">
-          <i className="material-icons">attach_file</i>
-        </button>
-
         <div className="editors">
           <Editor
             editorState={this.state.editorState}

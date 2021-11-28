@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import DraftEditor from './Common/DraftEditor';
 
-const HomeTemp = () => {
+const CreatePackage = () => {
 
     return (
         <div className="content">
             <div className="container">
                 <div className="page-title">
-                    <h3>Home Page</h3>
+                    <h3>Create Package</h3>
                 </div>
                 <div className="row">
                     <div className="col-lg-12">
@@ -159,4 +159,4 @@ const HomeTemp = () => {
     );
 };
 
-export default HomeTemp;
+export default CreatePackage;
