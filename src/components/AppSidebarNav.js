@@ -22,6 +22,17 @@ const AppSidebarNav = () => {
                     </li>
                 </ul>
             </li>
+            <li>
+                <a href="#pagesmenu" data-bs-toggle="collapse" aria-expanded="false" className="dropdown-toggle no-caret-down"><i className="fas fa-copy"></i> Pages</a>
+                <ul className="collapse list-unstyled" id="pagesmenu">
+                    <li>
+                        <a href="blank.html"><i className="fas fa-file"></i> Create Destination</a>
+                    </li>
+                    <li>
+                        <a href="404.html"><i className="fas fa-file"></i> View Destination</a>
+                    </li>
+                </ul>
+            </li>
             
         </ul>
     </nav>
