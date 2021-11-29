@@ -9,9 +9,14 @@ const HomeTemp = () => {
         { title: '', keywords: '', description: '', schema: '' }
     );
 
+    const [bannerImages, setBannerImages] = useState([
+        { uploadImg: '' }
+    ])
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("inputFields", inputFields);
+        console.log('bannerImages', bannerImages);
         Axios.post(url,{
             parent: inputFields.title,
             slug: inputFields.keywords,
@@ -29,13 +34,10 @@ const HomeTemp = () => {
         setInputFields(values);
     }
 
-    const [bannerImages, setBannerImages] = useState([
-        { uploadImg: '' }
-    ])
-
-    const handleAddImg = (index, eventtwo) => {
-        const values = [...inputFields];
-        values[index][eventtwo.target.name] = eventtwo.target.value;
+    const handleAddImg = (index, event) => {
+        const values = [ ...bannerImages ];
+        console.log(values[index][event.target.files[0]]);
+        values[index][event.target.name] = event.target.value;
         setBannerImages(values);
     }
 
@@ -57,7 +59,6 @@ const HomeTemp = () => {
                     <h3>Home Page</h3>
                 </div>
                 <form onSubmit={(e) => handleSubmit(e)}>
-
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="card">
@@ -112,12 +113,12 @@ const HomeTemp = () => {
                                         <label for="uploadImg" className="form-label">Upload Image</label>
                                         {bannerImages.map((bannerImg, index) => (
                                             <div key={index} style={{ 'display': 'flex' }}>
-                                                <input type="text"
+                                                <input type="file"
                                                     name="uploadImg"
                                                     className="form-control"
                                                     style={{ 'marginBottom': '10px' }}
                                                     value={bannerImages.uploadImg}
-                                                    onChange={eventtwo => handleAddImg(index, eventtwo)} />
+                                                    onChange={event => handleAddImg(index, event)} />
                                                 <button type="button"
                                                     class="btn btn-link mb-2"
                                                     style={{ 'marginLeft': '15px', 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px' }}
