@@ -4,24 +4,35 @@ import DraftEditor from './Common/DraftEditor';
 import Axios from 'axios';
 
 const CreatePackage = () => {
-    const url = "https://himalayan-backand.herokuapp.com/api/category/add"
+    const url = "https://himalayan-backand.herokuapp.com/api/package/add"
     const [inputFields, setInputFields] = useState(
-        { title: '', keywords: '', description: '', schema: '' }
+        { title: '', keywords: '', description: '', schema: '', pageSlug: '', mainTitle: '', tourDuration: '', bannerImg: '', listingImg: '',  overviewHead: '', overviewContent: '', destinationRoute: ''}
     );
 
     const [bannerImages, setBannerImages] = useState([
         { uploadImg: '' }
-    ])
+    ]);
+
+    const [pkgIncluded, setPkgIncluded] = useState([
+        { packageIncluded: '' }
+    ]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("inputFields", inputFields);
         console.log('bannerImages', bannerImages);
         Axios.post(url, {
-            parent: inputFields.title,
-            slug: inputFields.keywords,
-            type: inputFields.description,
-            icon: inputFields.schema
+            keywords: inputFields.keywords,
+            description: inputFields.description,
+            metaSchema: inputFields.schema,
+            pageUrl: inputFields.pageSlug,
+            pageTitle: inputFields.mainTitle,
+            tourDuration: inputFields.tourDuration,
+            bannerImage: inputFields.bannerImg,
+            listingImage: inputFields.listingImg,
+            overviewHeading: inputFields.overviewHead,
+            overviewContent: inputFields.overviewContent,
+            itineraryRoute: inputFields.destinationRoute
         })
             .then(res => {
                 console.log(res.data)
@@ -49,6 +60,23 @@ const CreatePackage = () => {
         const values = [...bannerImages];
         values.splice(index, 1);
         setBannerImages(values);
+    }
+
+    const handleAddPkgIncludes = (events) => {
+        const values = [...pkgIncluded];
+        console.log(values[0]);
+        //values[index][event.target.name] = event.target.value;
+        //setPkgIncluded(values);
+    }
+
+    const handleAddIncludedFields = () => {
+        setPkgIncluded([...pkgIncluded, { packageIncluded: '' }])
+    }
+
+    const handleRemoveIncludedFields = (index) => {
+        const values = [...pkgIncluded];
+        values.splice(index, 1);
+        setPkgIncluded(values);
     }
 
     return (
@@ -110,7 +138,7 @@ const CreatePackage = () => {
                                 <div className="card-body">
                                     <div className="mb-3">
                                         <label for="uploadImg" className="form-label">Upload Image</label>
-                                        {bannerImages.map((bannerImg, index) => (
+                                        {bannerImages.map((index) => (
                                             <div key={index} style={{ 'display': 'flex' }}>
                                                 <input type="file"
                                                     name="uploadImg"
@@ -139,23 +167,46 @@ const CreatePackage = () => {
                                 <div className="card-body">
                                     <div className="mb-3">
                                         <label for="pageSlug" className="form-label">Enter page URL</label>
-                                        <input type="text" name="pageSlug" placeholder="Enter page URL" className="form-control" />
+                                        <input type="text"
+                                            name="pageSlug"
+                                            placeholder="Enter page URL"
+                                            className="form-control"
+                                            value={inputFields.pageSlug}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="mainTitle" className="form-label">Enter Package Title</label>
-                                        <input type="text" name="mainTitle" placeholder="Enter Package Title" className="form-control" />
+                                        <input type="text"
+                                            name="mainTitle"
+                                            placeholder="Enter Package Title"
+                                            className="form-control"
+                                            value={inputFields.mainTitle}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="tourDuration" className="form-label">Enter Tour Duration</label>
-                                        <input type="text" name="tourDuration" placeholder="Enter Tour Duration" className="form-control" />
+                                        <input type="text"
+                                            name="tourDuration"
+                                            placeholder="Enter Tour Duration"
+                                            className="form-control"
+                                            value={inputFields.tourDuration}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="bannerImg" className="form-label">Upload Banner Image</label>
-                                        <input type="file" name="bannerImg" className="form-control" />
+                                        <input type="file"
+                                            name="bannerImg"
+                                            className="form-control"
+                                            value={inputFields.bannerImg}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="listingImg" className="form-label">Upload Listing Image</label>
-                                        <input type="file" name="listingImg" className="form-control" />
+                                        <input type="file"
+                                            name="listingImg"
+                                            className="form-control"
+                                            value={inputFields.listingImg}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                 </div>
                             </div>
@@ -167,7 +218,12 @@ const CreatePackage = () => {
                                 <div className="card-body">
                                     <div className="mb-3">
                                         <label for="overviewHead" className="form-label">Heading</label>
-                                        <input type="text" name="overviewHead" placeholder="Enter heading" className="form-control" />
+                                        <input type="text"
+                                            name="overviewHead"
+                                            placeholder="Enter heading"
+                                            className="form-control"
+                                            value={inputFields.overviewHead}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="overviewContent" className="form-label">Content</label>
@@ -176,11 +232,24 @@ const CreatePackage = () => {
                                     </div>
                                     <div className="mb-3">
                                         <label for="packageIncluded" className="form-label">Included</label>
-                                        <div style={{ 'display': 'flex' }}>
-                                            <input type="text" name="packageIncluded" placeholder="Enter Inclusion" className="form-control" />
-                                            <button type="button" class="btn btn-link mb-2" style={{ 'marginLeft': '15px', 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px' }}>+</button>
-                                            <button type="button" class="btn btn-link mb-2" style={{ 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px' }}>-</button>
+                                        {pkgIncluded.map((pkgInclude, index) => (
+                                        <div key={index} style={{ 'display': 'flex' }}>
+                                            <input type="text"
+                                                name="packageIncluded"
+                                                placeholder="Enter Inclusion"
+                                                className="form-control"
+                                                value={inputFields.packageIncluded}
+                                                onChange={events => handleAddPkgIncludes(events)} />
+                                            <button type="button"
+                                                class="btn btn-link mb-2"
+                                                style={{ 'marginLeft': '15px', 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px' }}
+                                                onClick={() => handleAddIncludedFields()}>+</button>
+                                            <button type="button"
+                                                class="btn btn-link mb-2"
+                                                style={{ 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px' }}
+                                                onClick={() => handleRemoveIncludedFields(index)}>-</button>
                                         </div>
+                                        ))}
                                     </div>
                                     <div className="mb-3">
                                         <label for="packageNotIncluded" className="form-label">Not Included</label>
