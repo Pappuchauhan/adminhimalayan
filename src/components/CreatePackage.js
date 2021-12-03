@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import DraftEditor from './Common/DraftEditor';
+import IncludedList from './subcomponents/IncludedList';
 import Axios from 'axios';
 
 const CreatePackage = () => {
+     
+    
     const url = "https://himalayan-backand.herokuapp.com/api/package/add"
     const [inputFields, setInputFields] = useState(
-        { title: '', keywords: '', description: '', schema: '', pageSlug: '', mainTitle: '', tourDuration: '', bannerImg: '', listingImg: '',  overviewHead: '', overviewContent: '', destinationRoute: ''}
+        { title: '', keywords: '', description: '', schema: '', pageSlug: '', mainTitle: '', tourDuration: '', bannerImg: '', listingImg: '',  overviewHead: '', overviewContent: '', destinationRoute: '',includedList: [{ index: Math.random(), includedName: ""}]}
     );
 
     const [bannerImages, setBannerImages] = useState([
@@ -20,7 +23,7 @@ const CreatePackage = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("inputFields", inputFields);
-        console.log('bannerImages', bannerImages);
+        console.log('bannerImages', inputFields.bannerImages);
         Axios.post(url, {
             keywords: inputFields.keywords,
             description: inputFields.description,
@@ -40,18 +43,48 @@ const CreatePackage = () => {
     }
 
     const handleChangeInput = (event) => {
-        const values = { ...inputFields };
-        values[event.target.name] = event.target.value;
-        setInputFields(values);
+
+
+        if (["includedName"].includes(event.target.name)) {
+            let includedList = [...inputFields.includedList]
+            includedList[event.target.dataset.id][event.target.name] = event.target.value;
+        } else {
+
+            const values = { ...inputFields };
+           // console.log('' + values);
+           values[event.target.name] = event.target.value;
+            setInputFields(values);
+
+           // setInputFields({ [event.target.name]: event.target.value })
+        }
+
+        console.log(inputFields);
+
+/*
+        if (["includedName"].includes(event.target.name)) {
+            let includedList = [...inputFields.includedList]
+            inputFields.includedList[event.target.dataset.id][event.target.name] = event.target.value;
+        } else {
+
+            const values = { ...inputFields };
+            console.log(values);
+           values[event.target.name] = event.target.value;
+            setInputFields(values);
+           // setInputFields({ [e.target.name]: e.target.value })
+        }
+
+*/
+      
     }
 
     const handleAddImg = (index, event) => {
         const values = [...bannerImages];
-        console.log(values[index][event.target.files[0]]);
-        values[index][event.target.name] = event.target.value;
-        setBannerImages(values);
+        console.log(values);
+        //console.log('check target' + values[index][event.target]);
+      //  values[index][event.target.name] = event.target.value;
+      //  setBannerImages(values);
     }
-
+ 
     const handleAddFields = () => {
         setBannerImages([...bannerImages, { uploadImg: '' }])
     }
@@ -79,13 +112,57 @@ const CreatePackage = () => {
         setPkgIncluded(values);
     }
 
+
+   // const [state, setState] = useState({ includedList: [{ index: Math.random(), includedName: ""}]});
+    /*
+    inputFields, setInputFields
+    setState = {
+        includedList: [{ index: Math.random(), includedName: ""}]
+       
+    }
+    */
+  /*
+    const handleChange = (e) => {
+        if (["includedName"].includes(e.target.name)) {
+            let includedList = [...inputFields.includedList]
+            includedList[e.target.dataset.id][e.target.name] = e.target.value;
+        } else {
+            //setInputFields({ [e.target.name]: e.target.value })
+        }
+
+        console.log('list1' + JSON.stringify(inputFields.includedList));
+    }
+    */
+    const addNewRow = () => {
+        setInputFields((prevState) => ({
+            includedList: [...prevState.includedList, { index: Math.random(), includedName: "" }],
+        }));
+    }
+
+
+    const deteteRow = (index) => {
+        setInputFields({
+            includedList: inputFields.includedList.filter((s, sindex) => index !== sindex),
+        });
+        // const taskList1 = [...this.state.taskList];
+        // taskList1.splice(index, 1);
+        // this.setState({ taskList: taskList1 });
+    }
+
+    const clickOnDelete = (record) => {
+        setInputFields({
+            includedList: inputFields.includedList.filter(r => r !== record)
+        });
+    }
+
+  //  let { setInputFields } = inputFields//let { notes, date, description, taskList } = this.state
     return (
         <div className="content">
             <div className="container">
                 <div className="page-title">
                     <h3>Create Package</h3>
                 </div>
-                <form onSubmit={(e) => handleSubmit(e)}>
+                <form onSubmit={(e) => handleSubmit(e)}  >
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="card">
@@ -138,14 +215,14 @@ const CreatePackage = () => {
                                 <div className="card-body">
                                     <div className="mb-3">
                                         <label for="uploadImg" className="form-label">Upload Image</label>
-                                        {bannerImages.map((index) => (
-                                            <div key={index} style={{ 'display': 'flex' }}>
+                                        {bannerImages.map((val,idx) => (
+                                            <div key={val.index} style={{ 'display': 'flex' }}>
                                                 <input type="file"
                                                     name="uploadImg"
                                                     className="form-control"
                                                     style={{ 'marginBottom': '10px' }}
-                                                    value={bannerImages.uploadImg}
-                                                    onChange={event => handleAddImg(index, event)} />
+                                                    value={val.uploadImg}
+                                                    onChange={event => handleAddImg(val.index, event)} />
                                                 <button type="button"
                                                     class="btn btn-link mb-2"
                                                     style={{ 'marginLeft': '15px', 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px' }}
@@ -153,8 +230,8 @@ const CreatePackage = () => {
                                                 <button type="button"
                                                     class="btn btn-link mb-2"
                                                     style={{ 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px' }}
-                                                    onClick={() => handleRemoveFields(index)}>-</button>
-                                            </div>
+                                                    onClick={() => handleRemoveFields(val.index)}>-</button>
+                                            </div> 
                                         ))}
                                     </div>
                                 </div>
@@ -232,24 +309,7 @@ const CreatePackage = () => {
                                     </div>
                                     <div className="mb-3">
                                         <label for="packageIncluded" className="form-label">Included</label>
-                                        {pkgIncluded.map((pkgInclude, index) => (
-                                        <div key={index} style={{ 'display': 'flex' }}>
-                                            <input type="text"
-                                                name="packageIncluded"
-                                                placeholder="Enter Inclusion"
-                                                className="form-control"
-                                                value={inputFields.packageIncluded}
-                                                onChange={events => handleAddPkgIncludes(events)} />
-                                            <button type="button"
-                                                class="btn btn-link mb-2"
-                                                style={{ 'marginLeft': '15px', 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px' }}
-                                                onClick={() => handleAddIncludedFields()}>+</button>
-                                            <button type="button"
-                                                class="btn btn-link mb-2"
-                                                style={{ 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px' }}
-                                                onClick={() => handleRemoveIncludedFields(index)}>-</button>
-                                        </div>
-                                        ))}
+                                        <IncludedList add={addNewRow}  onChange={handleChangeInput}   delete={clickOnDelete.bind(this)} includedList={inputFields.includedList} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="packageNotIncluded" className="form-label">Not Included</label>
