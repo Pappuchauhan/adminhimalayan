@@ -12,6 +12,15 @@
     transition: all 0.3s;
     border-right: 1px solid #e6ecf5;
 }
+.ck-editor__editable{
+    height: 200px;
+}
+.repeat-itineary{
+    border: solid 1px #ccc;
+    padding: 10px 15px;
+    padding-bottom: 0;
+    margin-bottom: 20px;
+}
 .public-DraftEditor-content{
     border: solid 1px #eee;
     padding: 10px;
