@@ -25,9 +25,9 @@ const CreatePackage = () => {
     ])
 
     // This state is using for top content description
-    const [topDescription, setTopDescription] = useState([
+    const [topDescription, setTopDescription] = useState(
         { overviewContent: 'testing' }
-    ])
+    )
 
     // This state is using for itineary list
     const [itinerayList, setItinerayList] = useState([
@@ -324,7 +324,6 @@ const CreatePackage = () => {
                                         {/* <DraftEditor /> */}
                                         <CKEditor
                                             editor={ClassicEditor}
-                                            data={topDescription.overviewContent}
                                             onChange={handleChangeDescription} />
                                     </div>
                                     <div className="mb-3">
