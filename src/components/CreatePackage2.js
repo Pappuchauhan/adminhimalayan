@@ -5,7 +5,170 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import Axios from 'axios';
 
 const CreatePackage = () => {
-    
+    const url = "https://himalayan-backand.herokuapp.com/api/package/add"
+
+    const [inputFields, setInputFields] = useState(
+        { title: '', keywords: '', description: '', schema: '', pageSlug: '', mainTitle: '', tourDuration: '', bannerImg: '', listingImg: '', overviewHead: '', overviewContent: '', destinationRoute: '' }
+    );
+    // This state is using for upload multiple image
+    const [bannerImages, setBannerImages] = useState([
+        { uploadImg: '' }
+    ]);
+
+    // This state is using for include list
+    const [includeList, setIncludeList] = useState([
+        { inclusionList: '' }
+    ])
+
+    // This state is using for exclude list
+    const [excludeList, setExcludeList] = useState([
+        { exclusionList: '' }
+    ])
+
+    // This state is using for top content description
+    const [topDescription, setTopDescription] = useState(
+        { overviewContent: 'testing' }
+    )
+
+    // This state is using for itineary list
+    const [itinerayList, setItinerayList] = useState([
+        { itineraryHeading: 'test', itineraryContent: 'test1' }
+    ])
+
+    // This state is using for hotel list
+    const [hotelList, setHotelList] = useState([
+        { destinationName: '', hotelImage: '', hotelType: '', hotelName: '', mealPlan: '' }
+    ])
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        Axios.post(url, {
+            title: inputFields.title,
+            keywords: inputFields.keywords,
+            description: inputFields.description,
+            metaSchema: inputFields.schema,
+            pageUrl: inputFields.pageSlug,
+            pageTitle: inputFields.mainTitle,
+            tourDuration: inputFields.tourDuration,
+            bannerImage: inputFields.bannerImg,
+            listingImage: inputFields.listingImg,
+            overviewHeading: inputFields.overviewHead,
+            overviewContent: topDescription,
+            itineraryRoute: inputFields.destinationRoute,
+            included: includeList,
+            notIncluded: excludeList,
+            hotelDestinationName: hotelList
+        })
+            .then(res => {
+                console.log(res.data)
+            })
+    }
+
+    // This is using for handle each single field
+    const handleChangeInput = (event) => {
+        const values = { ...inputFields };
+        values[event.target.name] = event.target.value;
+        setInputFields(values);
+    }
+    // This is using for  onchange event of top content description
+    const handleChangeDescription = (e, editor) => {
+        const data = editor.getData();
+        setTopDescription(data);
+    }
+    // This is using for  onchange event of include list
+    const handleChangeInclude = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...includeList];
+        list[index][name] = value;
+        setIncludeList(list)
+    }
+    // This is using for  add more include list
+    const handleAddInclusion = () => {
+        setIncludeList([...includeList, { inclusionList: '' }]);
+    }
+    // This is using for remove include list
+    const handleRemoveInclude = index => {
+        const list = [...includeList];
+        list.splice(index, 1);
+        setIncludeList(list);
+    }
+
+    // This is using for  onchange event of exclude list
+    const handleChangeExclude = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...excludeList];
+        list[index][name] = value;
+        setExcludeList(list)
+    }
+    // This is using for  add more exclude list
+    const handleAddExclude = () => {
+        setExcludeList([...excludeList, { exclusionList: '' }]);
+    }
+    // This is using for remove exclude list
+    const handleRemoveExclude = index => {
+        const list = [...excludeList];
+        list.splice(index, 1);
+        setExcludeList(list);
+    }
+
+    // This is using for  onchange event of itineary list
+    const handleChangeItineary = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...itinerayList];
+        list[index][name] = value;
+        setItinerayList(list)
+    }
+    // This is using for  add more itineary list
+    const handleAddItineary = () => {
+        setItinerayList([...itinerayList, { itineraryHeading: '', itineraryContent: '' }]);
+    }
+    // This is using for remove itineary list
+    const handleRemoveItineary = index => {
+        const list = [...itinerayList];
+        list.splice(index, 1);
+        setItinerayList(list);
+    }
+
+    // This is using for  onchange event of itineary list
+    const handleChangeHotel = (e, index) => {
+        const { name, value } = e.target;
+        const list = [...hotelList];
+        list[index][name] = value;
+        setHotelList(list)
+        console.log(list);
+    }
+    // This is using for  add more itineary list
+    const handleAddHotel = () => {
+        setHotelList([...hotelList, { destinationName: '', hotelImage: '', hotelType: '', hotelName: '', mealPlan: '' }]);
+    }
+    // This is using for remove itineary list
+    const handleRemoveHotel = index => {
+        const list = [...hotelList];
+        list.splice(index, 1);
+        setHotelList(list);
+    }
+
+    // This is using for  onchange event of include list
+    const handleChangePhoto = (e, index) => {
+        // const file = e.target.files[0];
+        const { name, value } = e.target;
+        const list = [...bannerImages];
+        console.log(list);
+        list[index][name] = value;
+        setBannerImages(list);
+
+    }
+    // This is using for  add more include list
+    const handleAddPhoto = () => {
+        setBannerImages([...bannerImages, { uploadImg: '' }]);
+    }
+    // This is using for remove include list
+    const handleRemovePhoto = index => {
+        const list = [...bannerImages];
+        list.splice(index, 1);
+        setBannerImages(list);
+    }
+
 
 
     return (
@@ -14,7 +177,7 @@ const CreatePackage = () => {
                 <div className="page-title">
                     <h3>Create Package</h3>
                 </div>
-                <form>
+                <form onSubmit={(e) => handleSubmit(e)}>
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="card">
@@ -26,28 +189,36 @@ const CreatePackage = () => {
                                             type="text"
                                             name="title"
                                             placeholder="Enter title"
-                                            className="form-control" />
+                                            className="form-control"
+                                            value={inputFields.title}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="keywords" className="form-label">Keywords</label>
                                         <input type="text"
                                             name="keywords"
                                             placeholder="Enter Keywords"
-                                            className="form-control" />
+                                            className="form-control"
+                                            value={inputFields.keywords}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="description" className="form-label">Description</label>
                                         <textarea rows="6"
                                             name="description"
                                             placeholder="Enter Description"
-                                            className="form-control"></textarea>
+                                            className="form-control"
+                                            value={inputFields.description}
+                                            onChange={event => handleChangeInput(event)}></textarea>
                                     </div>
                                     <div className="mb-3">
                                         <label for="schema" className="form-label">Schema</label>
                                         <textarea rows="6"
                                             name="schema"
                                             placeholder="Enter schema"
-                                            className="form-control"></textarea>
+                                            className="form-control"
+                                            value={inputFields.schema}
+                                            onChange={event => handleChangeInput(event)}></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -59,24 +230,26 @@ const CreatePackage = () => {
                                 <div className="card-body">
                                     <div className="mb-3">
                                         <label for="uploadImg" className="form-label">Upload Image</label>
-                                        
-                                            <div style={{ 'display': 'flex' }}>
+                                        {bannerImages.map((item, i) => (
+                                            <div key={i} style={{ 'display': 'flex' }}>
                                                 <input type="file"
                                                     name="uploadImg"
                                                     className="form-control"
-                                                    style={{ 'marginBottom': '10px' }}/>
-                                                <button
+                                                    style={{ 'marginBottom': '10px' }}
+                                                    value={item.uploadImg}
+                                                    onChange={e => handleChangePhoto(e, i)} />
+                                                {bannerImages.length - 1 === i && <button
                                                     type="button"
                                                     class="btn btn-link mb-2"
                                                     style={{ 'marginLeft': '15px', 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px', 'paddingRight': '0' }}
-                                                    >+</button>
-                                                <button
+                                                    onClick={handleAddPhoto}>+</button>}
+                                                {bannerImages.length !== 1 && <button
                                                     type="button"
                                                     class="btn btn-link mb-2"
                                                     style={{ 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px', 'marginLeft': '15px' }}
-                                                    >-</button>
+                                                    onClick={() => handleRemovePhoto(i)}>-</button>}
                                             </div>
-                                       
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -91,33 +264,43 @@ const CreatePackage = () => {
                                         <input type="text"
                                             name="pageSlug"
                                             placeholder="Enter page URL"
-                                            className="form-control" />
+                                            className="form-control"
+                                            value={inputFields.pageSlug}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="mainTitle" className="form-label">Enter Package Title</label>
                                         <input type="text"
                                             name="mainTitle"
                                             placeholder="Enter Package Title"
-                                            className="form-control" />
+                                            className="form-control"
+                                            value={inputFields.mainTitle}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="tourDuration" className="form-label">Enter Tour Duration</label>
                                         <input type="text"
                                             name="tourDuration"
                                             placeholder="Enter Tour Duration"
-                                            className="form-control" />
+                                            className="form-control"
+                                            value={inputFields.tourDuration}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="bannerImg" className="form-label">Upload Banner Image</label>
                                         <input type="file"
                                             name="bannerImg"
-                                            className="form-control" />
+                                            className="form-control"
+                                            value={inputFields.bannerImg}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="listingImg" className="form-label">Upload Listing Image</label>
                                         <input type="file"
                                             name="listingImg"
-                                            className="form-control" />
+                                            className="form-control"
+                                            value={inputFields.listingImg}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                 </div>
                             </div>
@@ -132,56 +315,69 @@ const CreatePackage = () => {
                                         <input type="text"
                                             name="overviewHead"
                                             placeholder="Enter heading"
-                                            className="form-control" />
+                                            className="form-control"
+                                            value={inputFields.overviewHead}
+                                            onChange={event => handleChangeInput(event)} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="overviewContent" className="form-label">Content</label>
                                         {/* <button onClick={onUnderlineClick}>U</button> */}
                                         {/* <DraftEditor /> */}
                                         <CKEditor
-                                            editor={ClassicEditor} />
+                                            editor={ClassicEditor}
+                                            onChange={handleChangeDescription} />
                                     </div>
                                     <div className="mb-3">
                                         <label for="inclusionList" className="form-label">Included</label>
-                                        
-                                                <div style={{ display: 'flex', marginBottom: '10px' }}>
+                                        {includeList.map((item, i) => {
+                                            return (
+                                                <div key={i} style={{ display: 'flex', marginBottom: '10px' }}>
                                                     <input type="text"
                                                         name="inclusionList"
                                                         placeholder="Enter Inclusion"
                                                         className="form-control"
+                                                        value={item.inclusionList}
+                                                        onChange={e => handleChangeInclude(e, i)}
                                                     />
-                                                    <button
+                                                    {includeList.length - 1 === i && <button
                                                         type="button"
                                                         class="btn btn-link mb-2"
                                                         style={{ 'marginLeft': '15px', 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px', 'paddingRight': '0' }}
-                                                        >+</button>
-                                                    <button
+                                                        onClick={handleAddInclusion}>+</button>}
+                                                    {includeList.length !== 1 && <button
                                                         type="button"
                                                         class="btn btn-link mb-2"
                                                         style={{ 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px', 'marginLeft': '15px' }}
-                                                        >-</button>
+                                                        onClick={() => handleRemoveInclude(i)}>-</button>}
                                                 </div>
+                                            )
+                                        })}
                                     </div>
                                     <div className="mb-3">
                                         <label for="exclusionList" className="form-label">Not Included</label>
-                                        
-                                                <div style={{ display: 'flex', marginBottom: '10px' }}>
+                                        {excludeList.map((item, i) => {
+                                            return (
+                                                <div key={i} style={{ display: 'flex', marginBottom: '10px' }}>
                                                     <input type="text"
                                                         name="exclusionList"
                                                         placeholder="Enter Exclusion"
                                                         className="form-control"
+                                                        value={item.exclusionList}
+                                                        onChange={e => handleChangeExclude(e, i)}
                                                     />
-                                                    <button
+                                                    {excludeList.length - 1 === i && <button
                                                         type="button"
                                                         class="btn btn-link mb-2"
                                                         style={{ 'marginLeft': '15px', 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px', 'paddingRight': '0' }}
-                                                        >+</button>
-                                                    <button
+                                                        onClick={handleAddExclude}>+</button>}
+                                                    {excludeList.length !== 1 && <button
                                                         type="button"
                                                         class="btn btn-link mb-2"
                                                         style={{ 'fontSize': '30px', 'textDecoration': 'none', 'lineHeight': '2px', 'marginLeft': '15px' }}
-                                                        >-</button>
+                                                        onClick={() => handleRemoveExclude(i)}>-</button>}
                                                 </div>
+                                            )
+                                        })}
                                     </div>
                                 </div>
                             </div>
@@ -195,34 +391,40 @@ const CreatePackage = () => {
                                         <label for="destinationRoute" className="form-label">Add Route</label>
                                         <input type="text" name="destinationRoute" placeholder="Enter Route" className="form-control" />
                                     </div>
-                                    
-                                            <div className="repeat-itineary">
+                                    {itinerayList.map((item, i) => {
+                                        return (
+                                            <div key={i} className="repeat-itineary">
                                                 <div className="mb-3">
                                                     <label for="itineraryHeading" className="form-label">Itinerary Heading</label>
                                                     <input type="text"
                                                         name="itineraryHeading"
                                                         placeholder="Enter Itinerary Heading"
-                                                        className="form-control" />
+                                                        className="form-control"
+                                                        value={item.itineraryHeading}
+                                                        onChange={e => handleChangeItineary(e, i)} />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label for="itineraryContent" className="form-label">Itinerary Content</label>
                                                     <CKEditor
-                                                        editor={ClassicEditor} />
+                                                        editor={ClassicEditor}
+                                                        onChange={e => handleChangeItineary(e, i)} />
                                                 </div>
                                                 <div className="mb-3">
                                                     <div style={{ 'display': 'flex' }}>
-                                                        <button type="button"
+                                                        {itinerayList.length - 1 === i && <button type="button"
                                                             class="btn btn-link mb-2"
                                                             style={{ 'fontSize': '14px', 'textDecoration': 'none', 'lineHeight': '2px' }}
-                                                            >Add More</button>
-                                                        <button
+                                                            onClick={handleAddItineary}>Add More</button>}
+                                                        {itinerayList.length !== 1 && <button
                                                             type="button"
                                                             class="btn btn-link mb-2"
                                                             style={{ 'fontSize': '14px', 'textDecoration': 'none', 'lineHeight': '2px' }}
-                                                            >Remove</button>
+                                                            onClick={() => handleRemoveItineary(i)}>Remove</button>}
                                                     </div>
                                                 </div>
                                             </div>
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -231,22 +433,27 @@ const CreatePackage = () => {
                             <div className="card">
                                 <div className="card-header">Hotel</div>
                                 <div className="card-body">
-                                    
-                                            <div className="repeat-itineary">
+                                    {hotelList.map((item, i) => {
+                                        return (
+                                            <div key={i} className="repeat-itineary">
                                                 <div className="mb-3">
                                                     <label for="destinationName" className="form-label">Destination Name</label>
                                                     <input
                                                         type="text"
                                                         name="destinationName"
                                                         placeholder="Enter Destination Name"
-                                                        className="form-control" />
+                                                        className="form-control"
+                                                        value={item.destinationName}
+                                                        onChange={e => handleChangeHotel(e, i)} />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label for="hotelImage" className="form-label">Upload Hotel Image</label>
                                                     <input
                                                         type="file"
                                                         name="hotelImage"
-                                                        className="form-control" />
+                                                        className="form-control"
+                                                        value={item.hotelImage}
+                                                        onChange={e => handleChangeHotel(e, i)} />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label for="hotelType" className="form-label">Hotel Type</label>
@@ -254,7 +461,9 @@ const CreatePackage = () => {
                                                         type="text"
                                                         name="hotelType"
                                                         placeholder="For ex: Standard (equivalent to basic 2*)"
-                                                        className="form-control" />
+                                                        className="form-control"
+                                                        value={item.hotelType}
+                                                        onChange={e => handleChangeHotel(e, i)} />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label for="hotelName" className="form-label">Hotel Name</label>
@@ -262,7 +471,9 @@ const CreatePackage = () => {
                                                         type="text"
                                                         name="hotelName"
                                                         placeholder="Enter Hotel Name"
-                                                        className="form-control" />
+                                                        className="form-control"
+                                                        value={item.hotelName}
+                                                        onChange={e => handleChangeHotel(e, i)} />
                                                 </div>
                                                 <div className="mb-3">
                                                     <label for="mealPlan" className="form-label">Meal Plan</label>
@@ -270,22 +481,26 @@ const CreatePackage = () => {
                                                         type="text"
                                                         name="mealPlan"
                                                         placeholder="Enter Meal Plan"
-                                                        className="form-control" />
+                                                        className="form-control"
+                                                        value={item.mealPlan}
+                                                        onChange={e => handleChangeHotel(e, i)} />
                                                 </div>
                                                 <div className="mb-3">
                                                     <div style={{ 'display': 'flex' }}>
-                                                        <button
+                                                        {hotelList.length - 1 === i && <button
                                                             type="button"
                                                             class="btn btn-link mb-2"
                                                             style={{ 'fontSize': '14px', 'textDecoration': 'none', 'lineHeight': '2px' }}
-                                                            >Add More</button>
-                                                        <button type="button"
+                                                            onClick={handleAddHotel}>Add More</button> }
+                                                        {hotelList.length !== 1 && <button type="button"
                                                             class="btn btn-link mb-2"
                                                             style={{ 'fontSize': '14px', 'textDecoration': 'none', 'lineHeight': '2px' }}
-                                                            >Remove</button>
+                                                            onClick={() => handleRemoveHotel(i)}>Remove</button> }
                                                     </div>
                                                 </div>
                                             </div>
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </div>
